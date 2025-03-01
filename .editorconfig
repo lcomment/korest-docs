@@ -1,0 +1,43 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+tab_width = 4
+indent_size = 4
+indent_style = space
+max_line_length = 120
+trim_trailing_whitespace = true
+
+[{*.kt,*.kts}]
+ij_kotlin_code_style_defaults = KOTLIN_OFFICIAL
+ij_kotlin_call_parameters_wrap = on_every_item
+ij_kotlin_method_parameters_wrap = on_every_item
+ij_kotlin_method_call_chain_wrap = normal
+ij_kotlin_class_annotation_wrap = split_into_lines
+ij_kotlin_method_annotation_wrap = split_into_lines
+ij_kotlin_space_after_comma = true
+ij_kotlin_space_after_extend_colon = true
+ij_kotlin_space_after_type_colon = true
+ij_kotlin_space_before_lambda_arrow = true
+ij_kotlin_space_before_when_parentheses = true
+ij_kotlin_imports_layout = *, java.**, javax.**, kotlin.**, org.**, com.**
+
+[{*.yml,*.yaml}]
+tab_width = 2
+indent_size = 2
+ij_yaml_align_values_properties = do_not_align
+ij_yaml_autoinsert_sequence_marker = true
+ij_yaml_block_mapping_on_new_line = false
+ij_yaml_indent_sequence_value = true
+ij_yaml_keep_indents_on_empty_lines = false
+ij_yaml_keep_line_breaks = true
+ij_yaml_sequence_on_new_line = false
+ij_yaml_space_before_colon = false
+ij_yaml_spaces_within_braces = true
+ij_yaml_spaces_within_brackets = true
+
+[*.md]
+max_line_length = 300
+trim_trailing_whitespace = false
