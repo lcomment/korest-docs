@@ -1,4 +1,6 @@
-# Korest Docs - Kotlin Dsl Restdocs
+<figure align="center">
+    <img src= "https://github.com/user-attachments/assets/28429f67-5acf-4641-97d0-12c6896bd244" width="100%"/>
+</figure>
 
 <div>
     <img src="https://img.shields.io/github/stars/lcomment/korest-docs">
