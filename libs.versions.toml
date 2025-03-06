@@ -17,11 +17,12 @@ restdocs3 = "3.0.3"
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin1" }
 kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin1" }
 kotlin-jpa = { id = "org.jetbrains.kotlin.plugin.jpa", version.ref = "kotlin1" }
-kotlin-allopen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin1" }
 ktlint = { id = "org.jmailen.kotlinter", version = "3.16.0" }
 
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot3" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
+
+vanniktech-maven-publish = { id = "com.vanniktech.maven.publish", version = "0.30.0" }
 
 [libraries]
 # kotlin
