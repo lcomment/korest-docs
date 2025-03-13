@@ -18,6 +18,7 @@
 
 package io.github.lcomment.korestdocs.spec
 
+import io.github.lcomment.korestdocs.extension.toAttributes
 import org.springframework.restdocs.hypermedia.HypermediaDocumentation
 import org.springframework.restdocs.hypermedia.LinkDescriptor
 import org.springframework.restdocs.hypermedia.LinkExtractor

@@ -18,21 +18,38 @@
 
 package io.github.lcomment.korestdocs.spec
 
-import io.github.lcomment.korestdocs.Header
 import io.github.lcomment.korestdocs.annotation.RestdocsSpecDslMarker
+import kotlin.reflect.KClass
 import org.springframework.restdocs.headers.HeaderDescriptor
 
 @RestdocsSpecDslMarker
-interface HeadersSpec {
+abstract class HeadersSpec {
 
-    fun add(
+    inline fun <reified T : Any> header(
         name: String,
-        description: String,
-        optional: Boolean = false,
+        description: String? = null,
+        example: T,
+        attributes: Map<String, Any?> = mapOf("optional" to false),
+    ) {
+        add(name, description, example, T::class, attributes)
+    }
+
+    inline fun <reified T : Any> optionalHeader(
+        name: String,
+        description: String? = null,
+        example: T,
+        attributes: Map<String, Any?> = mapOf("optional" to true),
+    ) {
+        add(name, description, example, T::class, attributes)
+    }
+
+    abstract fun <T : Any> add(
+        name: String,
+        description: String? = null,
+        example: T,
+        type: KClass<T>,
         attributes: Map<String, Any?> = emptyMap(),
     )
 
-    fun add(header: Header) = add(header.descriptor)
-
-    fun add(headerDescriptor: HeaderDescriptor)
+    abstract fun add(headerDescriptor: HeaderDescriptor)
 }

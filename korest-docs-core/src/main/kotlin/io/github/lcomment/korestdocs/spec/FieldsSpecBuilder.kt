@@ -40,11 +40,10 @@ internal class FieldsSpecBuilder(
         type: KClass<T>,
         attributes: Map<String, Any>,
     ) {
-        val map = attributes.putFormat(attributes, type)
         val descriptor = PayloadDocumentation.fieldWithPath(path)
             .type(type.toFieldType().toString())
             .description(description)
-            .attributes(*map.toAttributes())
+            .attributes(*attributes.putFormat(type).toAttributes())
 
         add(descriptor)
     }

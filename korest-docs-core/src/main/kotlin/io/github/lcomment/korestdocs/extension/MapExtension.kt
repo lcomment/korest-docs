@@ -30,21 +30,21 @@ internal fun Map<String, Any?>.toAttributes(): Array<Attributes.Attribute> {
 }
 
 internal fun Map<String, Any?>.putFormat(
-    attributes: Map<String, Any?>,
     type: KClass<*>,
 ): Map<String, Any?> {
     val fieldType = type.toFieldType()
-    val mutableAttributes = attributes.toMutableMap()
 
-    when (fieldType) {
-        EnumField -> mutableAttributes["format"] = type.entryNames()
-        DateTimeField -> mutableAttributes["format"] = "yyyy-mm-ddThh:mm:ss"
-        DateField -> mutableAttributes["format"] = "yyyy-mm-dd"
-        TimeField -> mutableAttributes["format"] = "hh:mm:ss"
-        else -> {
-            // Do nothing
-        }
+    return when (fieldType) {
+        EnumField -> this.plus("format" to type.entryNames())
+        DateTimeField -> this.plus("format" to "yyyy-mm-ddThh:mm:ss")
+        DateField -> this.plus("format" to "yyyy-mm-dd")
+        TimeField -> this.plus("format" to "hh:mm:ss")
+        else -> this
     }
+}
 
-    return mutableAttributes
+internal fun Map<String, Any?>.putType(
+    type: KClass<*>,
+): Map<String, Any?> {
+    return this.plus("type" to type.toFieldType().toString())
 }

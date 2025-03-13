@@ -18,22 +18,47 @@
 
 package io.github.lcomment.korestdocs.spec
 
-import io.github.lcomment.korestdocs.Parameter
 import io.github.lcomment.korestdocs.annotation.RestdocsSpecDslMarker
+import kotlin.reflect.KClass
 import org.springframework.restdocs.request.ParameterDescriptor
 
 @RestdocsSpecDslMarker
-interface ParametersSpec {
+abstract class ParametersSpec {
 
-    fun add(
+    inline fun <reified T : Any> pathVariable(
         name: String,
         description: String? = null,
-        optional: Boolean = false,
-        ignored: Boolean = false,
+        example: T,
+        attributes: Map<String, Any?> = emptyMap(),
+    ) {
+        add(name, description, example, T::class, attributes)
+    }
+
+    inline fun <reified T : Any> queryParameter(
+        name: String,
+        description: String? = null,
+        example: T,
+        attributes: Map<String, Any?> = mapOf("optional" to false),
+    ) {
+        add(name, description, example, T::class, attributes)
+    }
+
+    inline fun <reified T : Any> optionalQueryParameter(
+        name: String,
+        description: String? = null,
+        example: T,
+        attributes: Map<String, Any?> = mapOf("optional" to true),
+    ) {
+        add(name, description, example, T::class, attributes)
+    }
+
+    abstract fun <T : Any> add(
+        name: String,
+        description: String? = null,
+        example: T,
+        type: KClass<T>,
         attributes: Map<String, Any?> = emptyMap(),
     )
 
-    fun add(parameter: Parameter) = add(parameter.descriptor)
-
-    fun add(parameterDescriptor: ParameterDescriptor)
+    abstract fun add(parameterDescriptor: ParameterDescriptor)
 }
