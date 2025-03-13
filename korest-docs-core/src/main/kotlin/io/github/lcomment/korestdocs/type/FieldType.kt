@@ -16,16 +16,17 @@
  * limitations under the License.
  */
 
-package io.github.lcomment.korestdocs
+package io.github.lcomment.korestdocs.type
 
-import org.springframework.restdocs.request.PathParametersSnippet
-import org.springframework.restdocs.request.QueryParametersSnippet
-import org.springframework.restdocs.request.RequestDocumentation
+import org.springframework.restdocs.payload.JsonFieldType
 
-fun pathParameters(vararg params: Parameter): PathParametersSnippet {
-    return RequestDocumentation.pathParameters(params.map { it.descriptor })
-}
+sealed class FieldType(
+    val type: JsonFieldType,
+) {
 
-fun queryParameters(vararg params: Parameter): QueryParametersSnippet {
-    return RequestDocumentation.queryParameters(params.map { it.descriptor })
+    private val suffix = "Field"
+
+    override fun toString(): String {
+        return this.javaClass.simpleName.replace(suffix, "")
+    }
 }
