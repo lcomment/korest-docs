@@ -1,12 +1,14 @@
 package io.github.lcomment.example
 
+import jakarta.annotation.PostConstruct
 import java.util.*
+import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
-@org.springframework.boot.autoconfigure.SpringBootApplication
+@SpringBootApplication
 class Application
 
-@jakarta.annotation.PostConstruct
+@PostConstruct
 fun started() {
     TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"))
 }
