@@ -16,27 +16,8 @@
  * limitations under the License.
  */
 
-package io.github.lcomment.korestdocs
+package io.github.lcomment.korestdocs.type
 
 import org.springframework.restdocs.payload.JsonFieldType
-import org.springframework.restdocs.payload.PayloadDocumentation
 
-infix fun String.type(
-    docsFieldType: FieldType,
-): Field {
-    return createField(this, docsFieldType.type)
-}
-
-private fun createField(
-    value: String,
-    type: JsonFieldType,
-    optional: Boolean = true,
-): Field {
-    val descriptor = PayloadDocumentation.fieldWithPath(value)
-        .type(type)
-        .description("")
-
-    if (optional) descriptor.optional()
-
-    return Field(descriptor)
-}
+object AnyField : FieldType(JsonFieldType.VARIES)

@@ -16,21 +16,17 @@
  * limitations under the License.
  */
 
-package io.github.lcomment.korestdocs
+package io.github.lcomment.korestdocs.type
 
 import org.springframework.restdocs.payload.JsonFieldType
 
 sealed class FieldType(
     val type: JsonFieldType,
-)
+) {
 
-object ARRAY : FieldType(JsonFieldType.ARRAY)
-object BOOLEAN : FieldType(JsonFieldType.BOOLEAN)
-object OBJECT : FieldType(JsonFieldType.OBJECT)
-object NUMBER : FieldType(JsonFieldType.NUMBER)
-object NULL : FieldType(JsonFieldType.NULL)
-object STRING : FieldType(JsonFieldType.STRING)
-object DATETIME : FieldType(JsonFieldType.STRING)
-object DATE : FieldType(JsonFieldType.STRING)
-object TIME : FieldType(JsonFieldType.STRING)
-object ANY : FieldType(JsonFieldType.VARIES)
+    private val suffix = "Field"
+
+    override fun toString(): String {
+        return this.javaClass.simpleName.replace(suffix, "")
+    }
+}

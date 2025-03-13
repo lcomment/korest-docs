@@ -18,8 +18,8 @@ jobs:
           distribution: 'corretto'
           cache: gradle
 
-      - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v3
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
       - name: Lint Kotlin with Gradle
         run: ./gradlew lintKotlin

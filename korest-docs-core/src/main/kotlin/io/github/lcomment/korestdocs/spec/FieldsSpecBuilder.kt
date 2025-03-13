@@ -18,6 +18,10 @@
 
 package io.github.lcomment.korestdocs.spec
 
+import io.github.lcomment.korestdocs.extension.putFormat
+import io.github.lcomment.korestdocs.extension.toAttributes
+import io.github.lcomment.korestdocs.extension.toFieldType
+import kotlin.reflect.KClass
 import org.springframework.restdocs.payload.FieldDescriptor
 import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.restdocs.payload.PayloadSubsectionExtractor
@@ -27,44 +31,36 @@ import org.springframework.restdocs.payload.ResponseFieldsSnippet
 
 internal class FieldsSpecBuilder(
     private val fields: MutableList<FieldDescriptor> = mutableListOf<FieldDescriptor>(),
-) : FieldsSpec {
+) : FieldsSpec() {
 
-    override fun add(
+    override fun <T : Any> field(
         path: String,
-        type: Any?,
         description: String?,
-        optional: Boolean,
-        ignored: Boolean,
-        attributes: Map<String, Any?>,
-    ) = add(
-        PayloadDocumentation.fieldWithPath(path)
-            .type(type)
-            .description(description)
-            .apply {
-                if (optional) optional()
-                if (ignored) ignored()
-            }
-            .attributes(*attributes.toAttributes()),
-    )
-
-    override fun addSubsection(
-        path: String,
-        type: Any?,
-        description: String?,
-        optional: Boolean,
-        ignored: Boolean,
-        attributes: Map<String, Any?>,
+        example: T,
+        type: KClass<T>,
+        attributes: Map<String, Any>,
     ) {
-        add(
-            PayloadDocumentation.subsectionWithPath(path)
-                .description(description)
-                .type(type)
-                .apply {
-                    if (optional) optional()
-                    if (ignored) ignored()
-                }
-                .attributes(*attributes.toAttributes()),
-        )
+        val descriptor = PayloadDocumentation.fieldWithPath(path)
+            .type(type.toFieldType().toString())
+            .description(description)
+            .attributes(*attributes.putFormat(type).toAttributes())
+
+        add(descriptor)
+    }
+
+    override fun <T : Any> subsectionField(
+        path: String,
+        description: String?,
+        example: T,
+        type: KClass<T>,
+        attributes: Map<String, Any>,
+    ) {
+        val descriptor = PayloadDocumentation.subsectionWithPath(path)
+            .description(description)
+            .type(type)
+            .attributes(*attributes.toAttributes())
+
+        add(descriptor)
     }
 
     override fun add(fieldDescriptor: FieldDescriptor) {

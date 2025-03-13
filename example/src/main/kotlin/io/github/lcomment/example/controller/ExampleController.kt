@@ -1,20 +1,23 @@
 package io.github.lcomment.example.controller
 
+import io.github.lcomment.example.dto.response.ApiResponse
+import io.github.lcomment.example.dto.response.ExampleResponse
+import io.github.lcomment.example.service.ExampleService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class ExampleController {
+class ExampleController(
+    private val exampleService: ExampleService,
+) {
 
     @GetMapping("/example/{id}")
-    fun example(
+    fun get(
         @PathVariable id: Long,
-    ): ExampleResponse {
-        return ExampleResponse("Hello, World!")
-    }
+    ): ApiResponse<ExampleResponse> {
+        val data = exampleService.get()
 
-    data class ExampleResponse(
-        val message: String,
-    )
+        return ApiResponse.success(data)
+    }
 }

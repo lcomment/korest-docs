@@ -18,34 +18,66 @@
 
 package io.github.lcomment.korestdocs.spec
 
-import io.github.lcomment.korestdocs.Field
 import io.github.lcomment.korestdocs.annotation.RestdocsSpecDslMarker
+import kotlin.reflect.KClass
 import org.springframework.restdocs.payload.FieldDescriptor
 
 @RestdocsSpecDslMarker
-interface FieldsSpec {
+abstract class FieldsSpec {
 
-    fun add(
+    inline fun <reified T : Any> field(
         path: String,
-        type: Any? = null,
+        description: String?,
+        example: T,
+        attributes: Map<String, Any> = mapOf("optional" to false, "ignored" to false),
+    ) {
+        this.field(path, description, example, T::class, attributes)
+    }
+
+    inline fun <reified T : Any> optionalField(
+        path: String,
+        description: String?,
+        example: T,
+        attributes: Map<String, Any> = mapOf("optional" to true, "ignored" to false),
+    ) {
+        this.field(path, description, example, T::class, attributes)
+    }
+
+    inline fun <reified T : Any> ignoredField(
+        path: String,
+        description: String?,
+        example: T,
+        attributes: Map<String, Any> = mapOf("optional" to false, "ignored" to true),
+    ) {
+        this.field(path, description, example, T::class, attributes)
+    }
+
+    inline fun <reified T : Any> subsectionField(
+        path: String,
+        description: String?,
+        example: T,
+        attributes: Map<String, Any> = mapOf("optional" to false, "ignored" to false),
+    ) {
+        this.subsectionField(path, description, example, T::class, attributes)
+    }
+
+    abstract fun <T : Any> field(
+        path: String,
         description: String? = null,
-        optional: Boolean = false,
-        ignored: Boolean = false,
-        attributes: Map<String, Any?> = emptyMap(),
+        example: T,
+        type: KClass<T>,
+        attributes: Map<String, Any>,
     )
 
-    fun addSubsection(
+    abstract fun <T : Any> subsectionField(
         path: String,
-        type: Any? = null,
-        description: String? = null,
-        optional: Boolean = false,
-        ignored: Boolean = false,
-        attributes: Map<String, Any?> = emptyMap(),
+        description: String?,
+        example: T,
+        type: KClass<T>,
+        attributes: Map<String, Any>,
     )
 
-    fun add(field: Field) = add(field.descriptor)
+    abstract fun add(fieldDescriptor: FieldDescriptor)
 
-    fun add(fieldDescriptor: FieldDescriptor)
-
-    fun withPrefix(prefix: String, configure: FieldsSpec.() -> Unit)
+    abstract fun withPrefix(prefix: String, configure: FieldsSpec.() -> Unit)
 }

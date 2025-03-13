@@ -18,6 +18,9 @@
 
 package io.github.lcomment.korestdocs.spec
 
+import io.github.lcomment.korestdocs.extension.putType
+import io.github.lcomment.korestdocs.extension.toAttributes
+import kotlin.reflect.KClass
 import org.springframework.restdocs.headers.HeaderDescriptor
 import org.springframework.restdocs.headers.HeaderDocumentation
 import org.springframework.restdocs.headers.RequestHeadersSnippet
@@ -25,21 +28,21 @@ import org.springframework.restdocs.headers.ResponseHeadersSnippet
 
 internal class HeadersSpecBuilder(
     private val headers: MutableList<HeaderDescriptor> = mutableListOf<HeaderDescriptor>(),
-) : HeadersSpec {
+) : HeadersSpec() {
 
-    override fun add(
+    override fun <T : Any>add(
         name: String,
-        description: String,
-        optional: Boolean,
+        description: String?,
+        example: T,
+        type: KClass<T>,
         attributes: Map<String, Any?>,
-    ) = add(
-        HeaderDocumentation.headerWithName(name)
+    ) {
+        val descriptor = HeaderDocumentation.headerWithName(name)
             .description(description)
-            .apply {
-                if (optional) optional()
-            }
-            .attributes(*attributes.toAttributes()),
-    )
+            .attributes(*attributes.putType(type).toAttributes())
+
+        add(descriptor)
+    }
 
     override fun add(headerDescriptor: HeaderDescriptor) {
         headers.add(headerDescriptor)

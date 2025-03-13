@@ -18,6 +18,10 @@
 
 package io.github.lcomment.korestdocs.spec
 
+import io.github.lcomment.korestdocs.extension.putFormat
+import io.github.lcomment.korestdocs.extension.putType
+import io.github.lcomment.korestdocs.extension.toAttributes
+import kotlin.reflect.KClass
 import org.springframework.restdocs.request.ParameterDescriptor
 import org.springframework.restdocs.request.PathParametersSnippet
 import org.springframework.restdocs.request.QueryParametersSnippet
@@ -25,23 +29,21 @@ import org.springframework.restdocs.request.RequestDocumentation
 
 internal class ParametersSpecBuilder(
     private val parameters: MutableList<ParameterDescriptor> = mutableListOf<ParameterDescriptor>(),
-) : ParametersSpec {
+) : ParametersSpec() {
 
-    override fun add(
+    override fun <T : Any> add(
         name: String,
         description: String?,
-        optional: Boolean,
-        ignored: Boolean,
+        example: T,
+        type: KClass<T>,
         attributes: Map<String, Any?>,
-    ) = add(
-        RequestDocumentation.parameterWithName(name)
+    ) {
+        val descriptor = RequestDocumentation.parameterWithName(name)
             .description(description)
-            .apply {
-                if (optional) optional()
-                if (ignored) ignored()
-            }
-            .attributes(*attributes.toAttributes()),
-    )
+            .attributes(*attributes.putFormat(type).putType(type).toAttributes())
+
+        add(descriptor)
+    }
 
     override fun add(parameterDescriptor: ParameterDescriptor) {
         parameters.add(parameterDescriptor)

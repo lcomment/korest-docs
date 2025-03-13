@@ -18,6 +18,7 @@
 
 package io.github.lcomment.korestdocs.spec
 
+import io.github.lcomment.korestdocs.extension.toAttributes
 import org.springframework.restdocs.request.RequestDocumentation
 import org.springframework.restdocs.request.RequestPartDescriptor
 import org.springframework.restdocs.request.RequestPartsSnippet

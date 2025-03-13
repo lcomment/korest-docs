@@ -16,26 +16,8 @@
  * limitations under the License.
  */
 
-package io.github.lcomment.korestdocs
+package io.github.lcomment.korestdocs.type
 
-import org.springframework.restdocs.headers.HeaderDocumentation
+import org.springframework.restdocs.payload.JsonFieldType
 
-infix fun String.headerMeans(
-    description: String,
-): Header {
-    return createField(this, description)
-}
-
-private fun createField(
-    value: String,
-    description: String,
-    optional: Boolean = false,
-): Header {
-    val descriptor = HeaderDocumentation
-        .headerWithName(value)
-        .description(description)
-
-    if (optional) descriptor.optional()
-
-    return Header(descriptor)
-}
+object NumberField : FieldType(JsonFieldType.NUMBER)
