@@ -16,10 +16,8 @@
  * limitations under the License.
  */
 
-package io.github.lcomment.korestdocs.spec
+package io.github.lcomment.korestdocs.type
 
-import org.springframework.restdocs.snippet.Attributes
+import org.springframework.restdocs.payload.JsonFieldType
 
-fun Map<String, Any?>.toAttributes(): Array<Attributes.Attribute?> {
-    return map { Attributes.key(it.key).value(it.value) }.toTypedArray()
-}
+object EnumField : FieldType(JsonFieldType.STRING)
