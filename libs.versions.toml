@@ -4,9 +4,6 @@ kotlin2 = "2.0.10"
 spring6 = "6.0.5"
 spring-boot3 = "3.0.3"
 spring-dependency-management = "1.1.4"
-kotlin-jdsl = "3.5.4"
-hibernate = "6.4.4.Final"
-aspectjweaver = "1.9.20.1"
 jackson = "2.18.1"
 mockito = "5.14.2"
 testcontainers = "1.19.7"
@@ -47,13 +44,17 @@ spring-boot-starter-validation = { module = "org.springframework.boot:spring-boo
 spring-boot-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor", version.ref = "spring-boot3" }
 spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "spring-boot3" }
 
+# jackson
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jackson" }
+
 # test
 spring-test = { module = "org.springframework:spring-test", version.ref = "spring6" }
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot3" }
 spring-security-test = { module = "org.springframework.security:spring-security-test", version.ref = "spring6" }
 archunit = { module = "com.tngtech.archunit:archunit-junit5", version = "1.1.0" }
 assertj-core = { module = "org.assertj:assertj-core", version = "3.26.3" }
-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version = "5.11.0" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version = "5.9.2" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version = "1.11.0" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito" }
