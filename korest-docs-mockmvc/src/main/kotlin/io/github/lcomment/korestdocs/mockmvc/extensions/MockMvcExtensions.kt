@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package io.github.lcomment.korestdocs.mockmvc
+package io.github.lcomment.korestdocs.mockmvc.extensions
 
 import java.net.URI
 import org.springframework.http.HttpMethod

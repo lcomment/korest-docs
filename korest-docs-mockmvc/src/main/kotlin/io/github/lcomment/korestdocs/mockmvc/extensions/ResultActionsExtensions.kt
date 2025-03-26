@@ -16,10 +16,10 @@
  * limitations under the License.
  */
 
-package io.github.lcomment.korestdocs.mockmvc
+package io.github.lcomment.korestdocs.mockmvc.extensions
 
-import io.github.lcomment.korestdocs.spec.DocumentSpec
-import io.github.lcomment.korestdocs.spec.documentationScope
+import io.github.lcomment.korestdocs.mockmvc.MockMvcDocumentGenerator
+import io.github.lcomment.korestdocs.mockmvc.documentationScope
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.ResultActionsDsl
@@ -27,7 +27,7 @@ import org.springframework.test.web.servlet.ResultHandler
 
 fun ResultActions.andDocument(
     identifier: String,
-    configure: DocumentSpec.() -> Unit,
+    configure: MockMvcDocumentGenerator.() -> Unit,
 ): ResultActions {
     val documentSpec = documentationScope(identifier).apply(configure)
 
@@ -36,14 +36,14 @@ fun ResultActions.andDocument(
 
 fun ResultActionsDsl.andDocument(
     identifier: String,
-    configure: DocumentSpec.() -> Unit,
+    configure: MockMvcDocumentGenerator.() -> Unit,
 ): ResultActionsDsl {
     val documentSpec = documentationScope(identifier).apply(configure)
 
     return andDo { handle(documentSpec.toResultHandler()) }
 }
 
-private fun DocumentSpec.toResultHandler(): ResultHandler {
+private fun MockMvcDocumentGenerator.toResultHandler(): ResultHandler {
     return MockMvcRestDocumentation.document(
         identifier,
         requestPreprocessor,
