@@ -23,7 +23,9 @@ import kotlin.reflect.KClass
 import org.springframework.restdocs.headers.HeaderDescriptor
 
 @RestdocsSpecDslMarker
-abstract class HeadersSpec {
+abstract class HeadersSpec : DocumentSpec {
+
+    val headers: MutableMap<String, String> = mutableMapOf()
 
     inline fun <reified T : Any> header(
         name: String,

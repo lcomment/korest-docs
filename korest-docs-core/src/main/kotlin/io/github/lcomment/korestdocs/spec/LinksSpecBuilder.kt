@@ -18,13 +18,13 @@
 
 package io.github.lcomment.korestdocs.spec
 
-import io.github.lcomment.korestdocs.extension.toAttributes
+import io.github.lcomment.korestdocs.extensions.toAttributes
 import org.springframework.restdocs.hypermedia.HypermediaDocumentation
 import org.springframework.restdocs.hypermedia.LinkDescriptor
 import org.springframework.restdocs.hypermedia.LinkExtractor
 import org.springframework.restdocs.hypermedia.LinksSnippet
 
-internal class LinksSpecBuilder(
+class LinksSpecBuilder(
     private val links: MutableList<LinkDescriptor> = mutableListOf<LinkDescriptor>(),
 ) : LinksSpec {
 

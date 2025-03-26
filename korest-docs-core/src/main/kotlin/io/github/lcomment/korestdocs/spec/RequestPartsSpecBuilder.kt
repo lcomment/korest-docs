@@ -18,33 +18,46 @@
 
 package io.github.lcomment.korestdocs.spec
 
-import io.github.lcomment.korestdocs.extension.toAttributes
+import io.github.lcomment.korestdocs.extensions.toAttributes
+import org.springframework.mock.web.MockMultipartFile
 import org.springframework.restdocs.request.RequestDocumentation
 import org.springframework.restdocs.request.RequestPartDescriptor
 import org.springframework.restdocs.request.RequestPartsSnippet
 
-internal class RequestPartsSpecBuilder(
-    private val parts: MutableList<RequestPartDescriptor> = mutableListOf<RequestPartDescriptor>(),
-) : RequestPartsSpec {
+class RequestPartsSpecBuilder(
+    private val partDescriptors: MutableList<RequestPartDescriptor> = mutableListOf<RequestPartDescriptor>(),
+) : RequestPartsSpec() {
 
-    override fun add(
+    override fun part(
         name: String,
         description: String?,
-        optional: Boolean,
-        ignored: Boolean,
-        attributes: Map<String, Any?>,
-    ) = add(
-        RequestDocumentation.partWithName(name)
+        part: MockMultipartFile,
+        attributes: Map<String, Any>,
+    ) {
+        parts.putIfAbsent(name, part)
+        val descriptor = RequestDocumentation.partWithName(name)
             .description(description)
-            .apply {
-                if (optional) optional()
-                if (ignored) ignored()
-            }
-            .attributes(*attributes.toAttributes()),
-    )
+            .attributes(*attributes.toAttributes())
+
+        add(descriptor)
+    }
+
+    override fun optionalPart(
+        name: String,
+        description: String?,
+        part: MockMultipartFile,
+        attributes: Map<String, Any>,
+    ) {
+        parts.putIfAbsent(name, part)
+        val descriptor = RequestDocumentation.partWithName(name)
+            .description(description)
+            .attributes(*attributes.toAttributes())
+
+        add(descriptor)
+    }
 
     override fun add(requestPartDescriptor: RequestPartDescriptor) {
-        parts.add(requestPartDescriptor)
+        partDescriptors.add(requestPartDescriptor)
     }
 
     fun build(
@@ -52,8 +65,8 @@ internal class RequestPartsSpecBuilder(
         attributes: Map<String, Any?>,
     ): RequestPartsSnippet =
         if (relaxed) {
-            RequestDocumentation.relaxedRequestParts(attributes, parts)
+            RequestDocumentation.relaxedRequestParts(attributes, partDescriptors)
         } else {
-            RequestDocumentation.requestParts(attributes, parts)
+            RequestDocumentation.requestParts(attributes, partDescriptors)
         }
 }

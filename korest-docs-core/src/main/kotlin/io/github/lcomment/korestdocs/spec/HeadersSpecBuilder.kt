@@ -18,16 +18,16 @@
 
 package io.github.lcomment.korestdocs.spec
 
-import io.github.lcomment.korestdocs.extension.putType
-import io.github.lcomment.korestdocs.extension.toAttributes
+import io.github.lcomment.korestdocs.extensions.putType
+import io.github.lcomment.korestdocs.extensions.toAttributes
 import kotlin.reflect.KClass
 import org.springframework.restdocs.headers.HeaderDescriptor
 import org.springframework.restdocs.headers.HeaderDocumentation
 import org.springframework.restdocs.headers.RequestHeadersSnippet
 import org.springframework.restdocs.headers.ResponseHeadersSnippet
 
-internal class HeadersSpecBuilder(
-    private val headers: MutableList<HeaderDescriptor> = mutableListOf<HeaderDescriptor>(),
+class HeadersSpecBuilder(
+    private val headerDescriptors: MutableList<HeaderDescriptor> = mutableListOf<HeaderDescriptor>(),
 ) : HeadersSpec() {
 
     override fun <T : Any>add(
@@ -37,6 +37,7 @@ internal class HeadersSpecBuilder(
         type: KClass<T>,
         attributes: Map<String, Any?>,
     ) {
+        headers.putIfAbsent(name, example.toString())
         val descriptor = HeaderDocumentation.headerWithName(name)
             .description(description)
             .attributes(*attributes.putType(type).toAttributes())
@@ -45,12 +46,12 @@ internal class HeadersSpecBuilder(
     }
 
     override fun add(headerDescriptor: HeaderDescriptor) {
-        headers.add(headerDescriptor)
+        headerDescriptors.add(headerDescriptor)
     }
 
     fun buildRequestHeaders(attributes: Map<String, Any?>): RequestHeadersSnippet =
-        HeaderDocumentation.requestHeaders(attributes, headers)
+        HeaderDocumentation.requestHeaders(attributes, headerDescriptors)
 
     fun buildResponseHeaders(attributes: Map<String, Any?>): ResponseHeadersSnippet =
-        HeaderDocumentation.responseHeaders(attributes, headers)
+        HeaderDocumentation.responseHeaders(attributes, headerDescriptors)
 }

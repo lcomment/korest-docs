@@ -18,16 +18,16 @@
 
 package io.github.lcomment.korestdocs.spec
 
-import io.github.lcomment.korestdocs.extension.putFormat
-import io.github.lcomment.korestdocs.extension.putType
-import io.github.lcomment.korestdocs.extension.toAttributes
+import io.github.lcomment.korestdocs.extensions.putFormat
+import io.github.lcomment.korestdocs.extensions.putType
+import io.github.lcomment.korestdocs.extensions.toAttributes
 import kotlin.reflect.KClass
 import org.springframework.restdocs.request.ParameterDescriptor
 import org.springframework.restdocs.request.PathParametersSnippet
 import org.springframework.restdocs.request.QueryParametersSnippet
 import org.springframework.restdocs.request.RequestDocumentation
 
-internal class ParametersSpecBuilder(
+class ParametersSpecBuilder(
     private val parameters: MutableList<ParameterDescriptor> = mutableListOf<ParameterDescriptor>(),
 ) : ParametersSpec() {
 

@@ -23,7 +23,10 @@ import kotlin.reflect.KClass
 import org.springframework.restdocs.request.ParameterDescriptor
 
 @RestdocsSpecDslMarker
-abstract class ParametersSpec {
+abstract class ParametersSpec : DocumentSpec {
+
+    val pathVariables: MutableMap<String, Any> = mutableMapOf()
+    val queryParameters: MutableMap<String, Any> = mutableMapOf()
 
     inline fun <reified T : Any> pathVariable(
         name: String,
@@ -31,6 +34,7 @@ abstract class ParametersSpec {
         example: T,
         attributes: Map<String, Any?> = emptyMap(),
     ) {
+        pathVariables.putIfAbsent(name, example)
         add(name, description, example, T::class, attributes)
     }
 
@@ -40,6 +44,7 @@ abstract class ParametersSpec {
         example: T,
         attributes: Map<String, Any?> = mapOf("optional" to false),
     ) {
+        queryParameters.putIfAbsent(name, example)
         add(name, description, example, T::class, attributes)
     }
 
@@ -49,6 +54,7 @@ abstract class ParametersSpec {
         example: T,
         attributes: Map<String, Any?> = mapOf("optional" to true),
     ) {
+        queryParameters.putIfAbsent(name, example)
         add(name, description, example, T::class, attributes)
     }
 
