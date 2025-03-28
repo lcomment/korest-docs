@@ -29,3 +29,18 @@ fun String.urlMapping(
 
     return result
 }
+
+fun extractPathParameters(
+    urlTemplate: String,
+    pathVariables: Map<String, Any>?,
+): List<Any> {
+    if (pathVariables.isNullOrEmpty()) {
+        return emptyList()
+    }
+
+    val regex = "\\{(.*?)}".toRegex()
+
+    return regex.findAll(urlTemplate)
+        .mapNotNull { pathVariables[it.groupValues[1]] }
+        .toList()
+}
