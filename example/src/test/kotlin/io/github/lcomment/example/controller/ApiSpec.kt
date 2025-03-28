@@ -1,5 +1,24 @@
+/*
+ * Korest Docs
+ *
+ * Copyright 2025 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.github.lcomment.example.controller
 
+import io.github.lcomment.example.dto.request.ExampleMultipartRequest
 import io.github.lcomment.example.dto.request.ExampleRequest
 import io.github.lcomment.example.dto.response.ExampleResponse
 import io.github.lcomment.example.enums.ExampleEnum
@@ -18,9 +37,11 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
+import org.springframework.mock.web.MockMultipartFile
 import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.multipart
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
@@ -32,7 +53,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 
 @SpringBootTest
 @ExtendWith(KorestDocumentationExtension::class)
-class ApiSpec {
+internal class ApiSpec {
 
     lateinit var mockMvc: MockMvc
 
@@ -123,6 +144,37 @@ class ApiSpec {
     }
 
     @Test
+    fun `extension function - MULTIPART POST`() {
+        val image1 = MockMultipartFile("images", "", "image/png", "image1".toByteArray())
+        val image2 = MockMultipartFile("images", "", "image/png", "image2".toByteArray())
+        val request = ExampleMultipartRequest(listOf(image1, image2))
+
+        mockMvc.multipart(HttpMethod.POST, "/example") {
+            header(HttpHeaders.AUTHORIZATION, "Bearer access-token")
+            file(image1)
+            file(image2)
+            param("message", "exampleMessage")
+            contentType = MediaType.MULTIPART_FORM_DATA
+            accept = MediaType.APPLICATION_JSON
+            with {
+                it.method = HttpMethod.POST.name()
+                it
+            }
+        }
+            .andExpect { status { isOk() } }
+            .andDocument("junit-multipart-post-extension-function") {
+                requestHeader {
+                    header("Authorization", "Access Token", "Bearer access-token")
+                }
+
+                requestPart {
+                    part("images", "Images", image1)
+                    part("images", "Images", image2)
+                }
+            }
+    }
+
+    @Test
     fun `function - GET`() {
         val data = ExampleResponse()
         doReturn(data).`when`(exampleService).get()
@@ -130,6 +182,9 @@ class ApiSpec {
         documentation("junit-get-function") {
             request(HttpMethod.GET, "/example/{id}") {
                 pathVariable("id", "아이디", 1)
+            }
+
+            requestParameter {
                 queryParameter("param1", "파라미터 1", "value1")
             }
 
@@ -180,6 +235,22 @@ class ApiSpec {
             responseField {
                 field("code", "Response Code", ReturnCode.SUCCESS.code)
                 field("message", "Response Message", ReturnCode.SUCCESS.message)
+            }
+        }
+    }
+
+    @Test
+    fun `function - MULTIPART POST`() {
+        val image1 = MockMultipartFile("images", "", "image/png", "image1".toByteArray())
+        val image2 = MockMultipartFile("images", "", "image/png", "image2".toByteArray())
+        val request = ExampleMultipartRequest(listOf(image1, image2))
+
+        documentation("junit-multipart-post-function") {
+            multipart(HttpMethod.POST, "/example")
+
+            requestPart {
+                part("images", "Images", image1)
+                part("images", "Images", image2)
             }
         }
     }
