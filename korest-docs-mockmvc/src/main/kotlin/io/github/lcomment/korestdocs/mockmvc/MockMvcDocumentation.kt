@@ -19,14 +19,20 @@
 package io.github.lcomment.korestdocs.mockmvc
 
 import io.github.lcomment.korestdocs.mockmvc.context.MockMvcContextHolder
+import io.github.lcomment.korestdocs.mockmvc.extensions.extractPathParameters
+import io.github.lcomment.korestdocs.mockmvc.extensions.multipartWithDocs
 import io.github.lcomment.korestdocs.mockmvc.extensions.requestWithDocs
-import io.github.lcomment.korestdocs.mockmvc.extensions.urlMapping
-import kotlin.collections.component1
-import kotlin.collections.component2
+import io.github.lcomment.korestdocs.mockmvc.extensions.toMockMultipartFile
+import io.github.lcomment.korestdocs.mockmvc.extensions.toResultHandler
+import io.github.lcomment.korestdocs.spec.FieldsSpec
+import io.github.lcomment.korestdocs.spec.HeadersSpec
+import io.github.lcomment.korestdocs.spec.QueryParametersSpec
+import io.github.lcomment.korestdocs.spec.RequestPartsSpec
+import io.github.lcomment.korestdocs.type.RequestType
+import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
+import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.ResultActionsDsl
-import org.springframework.test.web.servlet.ResultHandler
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -38,39 +44,103 @@ fun documentation(
     val documentSpec = documentationScope(identifier).apply(configure)
     val method = documentSpec.method ?: throw IllegalArgumentException("Not Exist method")
     val urlTemplate = documentSpec.urlTemplate ?: throw IllegalArgumentException("Not Exist url template")
+    val requestType = documentSpec.requestType ?: throw IllegalArgumentException("Not Exist request type")
 
     val mockMvc = MockMvcContextHolder.getContext().getMockMvc()
-    val headersBuilder = documentSpec.headersBuilder
-    val parametersBuilder = documentSpec.parametersBuilder
-    val requestFieldsBuilder = documentSpec.requestFieldsBuilder
-    val mappedUrl = urlTemplate.urlMapping(parametersBuilder?.pathVariables)
+    val headersSpec = documentSpec.headersSpec
+    val pathVariables = extractPathParameters(urlTemplate, documentSpec.pathVariablesSpec?.pathVariables)
+    val queryParametersSpec = documentSpec.queryParametersSpec
+    val requestFieldsSpec = documentSpec.requestFieldsSpec
+    val requestPartsSpec = documentSpec.requestPartsSpec
+    val requestPartFieldsSpec = documentSpec.requestPartFieldsSpec
 
-    val resultActionsDsl = mockMvc.requestWithDocs(method, mappedUrl) {
-        parametersBuilder?.queryParameters?.forEach { (key, value) ->
-            param(key, value.toString())
-        }
+    val resultActionsDsl = when (requestType) {
+        RequestType.HTTP -> requestHttp(
+            urlTemplate = urlTemplate,
+            pathVariables = pathVariables,
+            method = method,
+            mockMvc = mockMvc,
+            headersSpec = headersSpec,
+            queryParameterSpec = queryParametersSpec,
+            requestFieldsSpec = requestFieldsSpec,
+        )
 
-        headersBuilder?.headers?.forEach { (key, value) ->
-            header(key, value.toString())
-        }
-
-        content = toJson(requestFieldsBuilder?.fields ?: emptyMap<String, Any>())
-        contentType = MediaType.APPLICATION_JSON
+        RequestType.MULTIPART -> requestMultipart(
+            urlTemplate = urlTemplate,
+            pathVariables = pathVariables,
+            method = method,
+            mockMvc = mockMvc,
+            headersSpec = headersSpec,
+            queryParametersSpec = queryParametersSpec,
+            requestPartFieldsSpec = requestPartFieldsSpec,
+            requestPartsSpec = requestPartsSpec,
+        )
     }
 
     return resultActionsDsl.andDo { handle(documentSpec.toResultHandler()) }
 }
 
-private fun MockMvcDocumentGenerator.toResultHandler(): ResultHandler {
-    return MockMvcRestDocumentation.document(
-        identifier,
-        requestPreprocessor,
-        responsePreprocessor,
-        *snippets.toTypedArray(),
-    )
+private fun requestHttp(
+    urlTemplate: String,
+    pathVariables: List<Any>,
+    method: HttpMethod,
+    mockMvc: MockMvc,
+    headersSpec: HeadersSpec?,
+    queryParameterSpec: QueryParametersSpec?,
+    requestFieldsSpec: FieldsSpec?,
+): ResultActionsDsl {
+    return mockMvc.requestWithDocs(method, urlTemplate, *pathVariables.toTypedArray()) {
+        queryParameterSpec?.queryParameters?.forEach { (key, value) ->
+            param(key, value.toString())
+        }
+
+        headersSpec?.headers?.forEach { (key, value) ->
+            header(key, value.toString())
+        }
+
+        content = toJson(requestFieldsSpec?.fields ?: emptyMap<String, Any>())
+        contentType = MediaType.APPLICATION_JSON
+    }
 }
 
-private fun toJson(value: Any): String {
+private fun requestMultipart(
+    urlTemplate: String,
+    pathVariables: List<Any>,
+    method: HttpMethod,
+    mockMvc: MockMvc,
+    headersSpec: HeadersSpec?,
+    queryParametersSpec: QueryParametersSpec?,
+    requestPartFieldsSpec: Map<String, FieldsSpec>?,
+    requestPartsSpec: RequestPartsSpec?,
+): ResultActionsDsl {
+    return mockMvc.multipartWithDocs(method, urlTemplate, *pathVariables.toTypedArray()) {
+        queryParametersSpec?.queryParameters?.forEach { (key, value) ->
+            param(key, value.toString())
+        }
+
+        headersSpec?.headers?.forEach { (key, value) ->
+            header(key, value.toString())
+        }
+
+        requestPartsSpec?.parts?.values?.forEach {
+            file(it)
+        }
+
+        requestPartFieldsSpec?.forEach { (key, value) ->
+            file(value.fields.toMockMultipartFile(key))
+        }
+
+        contentType = MediaType.MULTIPART_FORM_DATA
+        accept = MediaType.APPLICATION_JSON
+
+        with {
+            it.method = method.name()
+            it
+        }
+    }
+}
+
+fun toJson(value: Any): String {
     return mapper.writeValueAsString(value)
 }
 

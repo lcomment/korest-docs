@@ -43,7 +43,7 @@ fun ResultActionsDsl.andDocument(
     return andDo { handle(documentSpec.toResultHandler()) }
 }
 
-private fun MockMvcDocumentGenerator.toResultHandler(): ResultHandler {
+internal fun MockMvcDocumentGenerator.toResultHandler(): ResultHandler {
     return MockMvcRestDocumentation.document(
         identifier,
         requestPreprocessor,

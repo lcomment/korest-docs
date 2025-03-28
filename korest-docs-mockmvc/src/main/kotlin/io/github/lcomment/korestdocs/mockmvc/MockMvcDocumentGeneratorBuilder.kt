@@ -22,10 +22,13 @@ import io.github.lcomment.korestdocs.spec.FieldsSpec
 import io.github.lcomment.korestdocs.spec.FieldsSpecBuilder
 import io.github.lcomment.korestdocs.spec.HeadersSpec
 import io.github.lcomment.korestdocs.spec.HeadersSpecBuilder
-import io.github.lcomment.korestdocs.spec.ParametersSpec
-import io.github.lcomment.korestdocs.spec.ParametersSpecBuilder
+import io.github.lcomment.korestdocs.spec.PathVariablesSpec
+import io.github.lcomment.korestdocs.spec.PathVariablesSpecBuilder
+import io.github.lcomment.korestdocs.spec.QueryParametersSpec
+import io.github.lcomment.korestdocs.spec.QueryParametersSpecBuilder
 import io.github.lcomment.korestdocs.spec.RequestPartsSpec
 import io.github.lcomment.korestdocs.spec.RequestPartsSpecBuilder
+import io.github.lcomment.korestdocs.type.RequestType
 import org.springframework.http.HttpMethod
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor
 import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor
@@ -36,9 +39,13 @@ internal class MockMvcDocumentGeneratorBuilder(
     override val identifier: String,
     override var method: HttpMethod? = null,
     override var urlTemplate: String? = null,
-    override var headersBuilder: HeadersSpec? = null,
-    override var parametersBuilder: ParametersSpec? = null,
-    override var requestFieldsBuilder: FieldsSpec? = null,
+    override var requestType: RequestType? = null,
+    override var headersSpec: HeadersSpec? = null,
+    override var pathVariablesSpec: PathVariablesSpec? = null,
+    override var queryParametersSpec: QueryParametersSpec? = null,
+    override var requestFieldsSpec: FieldsSpec? = null,
+    override var requestPartsSpec: RequestPartsSpec? = null,
+    override var requestPartFieldsSpec: Map<String, FieldsSpec>? = null,
     override val requestPreprocessor: OperationRequestPreprocessor = OperationRequestPreprocessor { r -> r },
     override val responsePreprocessor: OperationResponsePreprocessor = OperationResponsePreprocessor { r -> r },
     override val snippets: MutableList<Snippet> = mutableListOf<Snippet>(),
@@ -51,41 +58,60 @@ internal class MockMvcDocumentGeneratorBuilder(
     override fun request(
         method: HttpMethod,
         urlTemplate: String,
-        configure: ParametersSpec.() -> Unit,
+        configure: PathVariablesSpec.() -> Unit,
     ) {
         this.method = method
         this.urlTemplate = urlTemplate
-        this.parametersBuilder = ParametersSpecBuilder().apply(configure)
+        this.requestType = RequestType.HTTP
+
+        val specBuilder = PathVariablesSpecBuilder().apply(configure)
+        this.pathVariablesSpec = specBuilder
+        addSnippet(specBuilder.buildPathParameters(false, emptyMap()))
+    }
+
+    override fun multipart(
+        method: HttpMethod,
+        urlTemplate: String,
+        configure: PathVariablesSpec.() -> Unit,
+    ) {
+        this.method = method
+        this.urlTemplate = urlTemplate
+        this.requestType = RequestType.MULTIPART
+
+        val specBuilder = PathVariablesSpecBuilder().apply(configure)
+        this.pathVariablesSpec = specBuilder
+        addSnippet(specBuilder.buildPathParameters(false, emptyMap()))
     }
 
     override fun requestHeader(
         attributes: Map<String, Any?>,
         configure: HeadersSpec.() -> Unit,
     ) {
-        val specBuilder = HeadersSpecBuilder().apply(configure)
+        val spec = HeadersSpecBuilder().apply(configure)
 
-        this.headersBuilder = specBuilder
-        addSnippet(specBuilder.buildRequestHeaders(attributes))
+        this.headersSpec = spec
+        addSnippet(spec.buildRequestHeaders(attributes))
     }
 
     override fun pathParameter(
         relaxed: Boolean,
         attributes: Map<String, Any?>,
-        configure: ParametersSpec.() -> Unit,
+        configure: PathVariablesSpec.() -> Unit,
     ) {
-        val specBuilder = ParametersSpecBuilder().apply(configure)
+        val spec = PathVariablesSpecBuilder().apply(configure)
 
-        addSnippet(specBuilder.buildPathParameters(relaxed, attributes))
+        addSnippet(spec.buildPathParameters(relaxed, attributes))
     }
 
     override fun requestParameter(
         relaxed: Boolean,
         attributes: Map<String, Any?>,
-        configure: ParametersSpec.() -> Unit,
+        configure: QueryParametersSpec.() -> Unit,
     ) {
-        val specBuilder = ParametersSpecBuilder().apply(configure)
+        val spec = QueryParametersSpecBuilder().apply(configure)
+        this.queryParametersSpec = spec
 
-        addSnippet(specBuilder.buildQueryParameters(relaxed, attributes))
+        addSnippet(spec.buildQueryParameters(relaxed, attributes))
     }
 
     override fun requestField(
@@ -94,10 +120,10 @@ internal class MockMvcDocumentGeneratorBuilder(
         attributes: Map<String, Any?>,
         configure: FieldsSpec.() -> Unit,
     ) {
-        val specBuilder = FieldsSpecBuilder().apply(configure)
-        this.requestFieldsBuilder = specBuilder
+        val spec = FieldsSpecBuilder().apply(configure)
+        this.requestFieldsSpec = spec
 
-        addSnippet(specBuilder.buildRequestFields(relaxed, subsectionExtractor, attributes))
+        addSnippet(spec.buildRequestFields(relaxed, subsectionExtractor, attributes))
     }
 
     override fun requestPart(
@@ -105,10 +131,10 @@ internal class MockMvcDocumentGeneratorBuilder(
         attributes: Map<String, Any?>,
         configure: RequestPartsSpec.() -> Unit,
     ) {
-        val snippet = RequestPartsSpecBuilder().apply(configure)
-            .build(relaxed, attributes)
+        val spec = RequestPartsSpecBuilder().apply(configure)
+        this.requestPartsSpec = spec
 
-        addSnippet(snippet)
+        addSnippet(spec.build(relaxed, attributes))
     }
 
     override fun requestPartField(
@@ -118,11 +144,10 @@ internal class MockMvcDocumentGeneratorBuilder(
         attributes: Map<String, Any?>,
         configure: FieldsSpec.() -> Unit,
     ) {
-        val snippet = FieldsSpecBuilder()
-            .apply(configure)
-            .buildRequestPartFields(part, relaxed, subsectionExtractor, attributes)
+        val spec = FieldsSpecBuilder().apply(configure)
+        this.requestPartFieldsSpec = mapOf(part to spec)
 
-        addSnippet(snippet)
+        addSnippet(spec.buildRequestPartFields(part, relaxed, subsectionExtractor, attributes))
     }
 
     override fun responseHeader(

@@ -20,8 +20,10 @@ package io.github.lcomment.korestdocs.mockmvc
 
 import io.github.lcomment.korestdocs.spec.FieldsSpec
 import io.github.lcomment.korestdocs.spec.HeadersSpec
-import io.github.lcomment.korestdocs.spec.ParametersSpec
+import io.github.lcomment.korestdocs.spec.PathVariablesSpec
+import io.github.lcomment.korestdocs.spec.QueryParametersSpec
 import io.github.lcomment.korestdocs.spec.RequestPartsSpec
+import io.github.lcomment.korestdocs.type.RequestType
 import org.springframework.http.HttpMethod
 import org.springframework.restdocs.operation.preprocess.OperationRequestPreprocessor
 import org.springframework.restdocs.operation.preprocess.OperationResponsePreprocessor
@@ -38,22 +40,36 @@ interface MockMvcDocumentGenerator {
 
     val snippets: List<Snippet>
 
+    var requestType: RequestType?
+
     var method: HttpMethod?
 
     var urlTemplate: String?
 
-    var headersBuilder: HeadersSpec?
+    var headersSpec: HeadersSpec?
 
-    var parametersBuilder: ParametersSpec?
+    var pathVariablesSpec: PathVariablesSpec?
 
-    var requestFieldsBuilder: FieldsSpec?
+    var queryParametersSpec: QueryParametersSpec?
+
+    var requestFieldsSpec: FieldsSpec?
+
+    var requestPartsSpec: RequestPartsSpec?
+
+    var requestPartFieldsSpec: Map<String, FieldsSpec>?
 
     fun addSnippet(snippet: Snippet)
 
     fun request(
         method: HttpMethod,
         urlTemplate: String,
-        configure: ParametersSpec.() -> Unit,
+        configure: PathVariablesSpec.() -> Unit = {},
+    )
+
+    fun multipart(
+        method: HttpMethod,
+        urlTemplate: String,
+        configure: PathVariablesSpec.() -> Unit = {},
     )
 
     fun requestHeader(
@@ -64,13 +80,13 @@ interface MockMvcDocumentGenerator {
     fun pathParameter(
         relaxed: Boolean = false,
         attributes: Map<String, Any?> = emptyMap(),
-        configure: ParametersSpec.() -> Unit,
+        configure: PathVariablesSpec.() -> Unit,
     )
 
     fun requestParameter(
         relaxed: Boolean = false,
         attributes: Map<String, Any?> = emptyMap(),
-        configure: ParametersSpec.() -> Unit,
+        configure: QueryParametersSpec.() -> Unit,
     )
 
     fun requestField(
