@@ -7,6 +7,7 @@ plugins {
 dependencies {
     api(projects.core)
     api(libs.restdocs.mockmvc)
+    implementation(libs.jakarta.servlet.api)
     implementation(libs.spring.context)
     implementation(libs.junit.jupiter)
     implementation(libs.jackson.databind)

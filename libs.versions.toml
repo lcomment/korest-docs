@@ -22,6 +22,9 @@ spring-dependency-management = { id = "io.spring.dependency-management", version
 vanniktech-maven-publish = { id = "com.vanniktech.maven.publish", version = "0.30.0" }
 
 [libraries]
+# jakarta
+jakarta-servlet-api = { module = "jakarta.servlet:jakarta.servlet-api", version = "6.0.0" }
+
 # kotlin
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
