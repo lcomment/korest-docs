@@ -99,6 +99,7 @@ internal class MockMvcDocumentGeneratorBuilder(
         configure: PathVariablesSpec.() -> Unit,
     ) {
         val spec = PathVariablesSpecBuilder().apply(configure)
+        this.pathVariablesSpec = spec
 
         addSnippet(spec.buildPathParameters(relaxed, attributes))
     }
@@ -174,5 +175,3 @@ internal class MockMvcDocumentGeneratorBuilder(
         addSnippet(snippet)
     }
 }
-
-fun documentationScope(identifier: String): MockMvcDocumentGenerator = MockMvcDocumentGeneratorBuilder(identifier)

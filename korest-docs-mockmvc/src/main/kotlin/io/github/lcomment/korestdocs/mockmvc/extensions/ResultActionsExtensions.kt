@@ -19,7 +19,6 @@
 package io.github.lcomment.korestdocs.mockmvc.extensions
 
 import io.github.lcomment.korestdocs.mockmvc.MockMvcDocumentGenerator
-import io.github.lcomment.korestdocs.mockmvc.documentationScope
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.ResultActionsDsl

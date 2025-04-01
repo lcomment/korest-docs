@@ -19,6 +19,7 @@
 package io.github.lcomment.korestdocs.mockmvc
 
 import io.github.lcomment.korestdocs.mockmvc.context.MockMvcContextHolder
+import io.github.lcomment.korestdocs.mockmvc.extensions.documentationScope
 import io.github.lcomment.korestdocs.mockmvc.extensions.extractPathParameters
 import io.github.lcomment.korestdocs.mockmvc.extensions.multipartWithDocs
 import io.github.lcomment.korestdocs.mockmvc.extensions.requestWithDocs
