@@ -15,10 +15,22 @@ You can generate API documentation using a test framework (e.g., MockMvc, RestAs
 
 ## How to use
 
+### build.gradle.kts
+
 ```kotlin
 val version = "x.x.x"
 dependencies {
-    implementation("io.github.lcomment:korest-docs:$version")
+    implementation("io.github.lcomment:korest-docs-starter:$version")
+}
+```
+
+### Test Code
+
+```kotlin
+. . .
+@ExtendWith(KorestDocumentationExtension::class)
+internal class ApiSpec {
+    . . .
 }
 ```
 
