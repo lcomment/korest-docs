@@ -18,18 +18,6 @@
 
 package io.github.lcomment.korestdocs.mockmvc.extensions
 
-fun String.urlMapping(
-    pathVariables: Map<String, Any>?,
-): String {
-    var result = this
-
-    pathVariables?.forEach { (key, value) ->
-        result = result.replace("{$key}", value.toString())
-    } ?: result
-
-    return result
-}
-
 fun extractPathParameters(
     urlTemplate: String,
     pathVariables: Map<String, Any>?,

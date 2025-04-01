@@ -26,7 +26,6 @@ import org.springframework.restdocs.request.ParameterDescriptor
 abstract class PathVariablesSpec : ParametersSpec {
 
     val pathVariables: MutableMap<String, Any> = mutableMapOf()
-    val queryParameters: MutableMap<String, Any> = mutableMapOf()
 
     inline fun <reified T : Any> pathVariable(
         name: String,
