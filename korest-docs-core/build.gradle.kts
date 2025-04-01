@@ -8,6 +8,9 @@ dependencies {
     implementation(libs.restdocs.core)
     implementation(libs.spring.web)
     implementation(libs.spring.test)
+
+    testImplementation(libs.kotest.junit)
+    testImplementation(libs.kotest.assertions.core)
 }
 
 tasks.bootJar {

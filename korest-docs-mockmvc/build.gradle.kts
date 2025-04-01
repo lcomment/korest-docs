@@ -12,6 +12,10 @@ dependencies {
     implementation(libs.junit.jupiter)
     implementation(libs.jackson.databind)
     implementation(libs.jackson.datatype.jsr310)
+    implementation(libs.jackson.core)
+
+    testImplementation(libs.kotest.junit)
+    testImplementation(libs.kotest.assertions.core)
 }
 
 tasks.bootJar {
