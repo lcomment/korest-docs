@@ -7,9 +7,6 @@ plugins {
 dependencies {
     api(projects.core)
     api(projects.mockmvc)
-    implementation(libs.spring.web)
-    implementation(libs.spring.test)
-    implementation(libs.restdocs.restassured)
 }
 
 tasks.bootJar {
