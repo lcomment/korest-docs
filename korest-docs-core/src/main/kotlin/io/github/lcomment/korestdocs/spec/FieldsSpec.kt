@@ -23,7 +23,9 @@ import kotlin.reflect.KClass
 import org.springframework.restdocs.payload.FieldDescriptor
 
 @RestdocsSpecDslMarker
-abstract class FieldsSpec {
+abstract class FieldsSpec : DocumentSpec {
+
+    val fields = mutableMapOf<String, Any>()
 
     inline fun <reified T : Any> field(
         path: String,

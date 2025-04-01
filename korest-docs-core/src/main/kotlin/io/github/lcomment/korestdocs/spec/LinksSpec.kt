@@ -22,7 +22,7 @@ import io.github.lcomment.korestdocs.annotation.RestdocsSpecDslMarker
 import org.springframework.restdocs.hypermedia.LinkDescriptor
 
 @RestdocsSpecDslMarker
-interface LinksSpec {
+interface LinksSpec : DocumentSpec {
 
     fun add(
         rel: String,

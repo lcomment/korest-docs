@@ -18,9 +18,9 @@
 
 package io.github.lcomment.korestdocs.spec
 
-import io.github.lcomment.korestdocs.extension.putFormat
-import io.github.lcomment.korestdocs.extension.toAttributes
-import io.github.lcomment.korestdocs.extension.toFieldType
+import io.github.lcomment.korestdocs.extensions.putFormat
+import io.github.lcomment.korestdocs.extensions.toAttributes
+import io.github.lcomment.korestdocs.extensions.toFieldType
 import kotlin.reflect.KClass
 import org.springframework.restdocs.payload.FieldDescriptor
 import org.springframework.restdocs.payload.PayloadDocumentation
@@ -29,8 +29,8 @@ import org.springframework.restdocs.payload.RequestFieldsSnippet
 import org.springframework.restdocs.payload.RequestPartFieldsSnippet
 import org.springframework.restdocs.payload.ResponseFieldsSnippet
 
-internal class FieldsSpecBuilder(
-    private val fields: MutableList<FieldDescriptor> = mutableListOf<FieldDescriptor>(),
+class FieldsSpecBuilder(
+    private val fieldDescriptors: MutableList<FieldDescriptor> = mutableListOf<FieldDescriptor>(),
 ) : FieldsSpec() {
 
     override fun <T : Any> field(
@@ -40,6 +40,7 @@ internal class FieldsSpecBuilder(
         type: KClass<T>,
         attributes: Map<String, Any>,
     ) {
+        fields.putIfAbsent(path, example)
         val descriptor = PayloadDocumentation.fieldWithPath(path)
             .type(type.toFieldType().toString())
             .description(description)
@@ -64,14 +65,14 @@ internal class FieldsSpecBuilder(
     }
 
     override fun add(fieldDescriptor: FieldDescriptor) {
-        fields.add(fieldDescriptor)
+        fieldDescriptors.add(fieldDescriptor)
     }
 
     override fun withPrefix(
         prefix: String,
         configure: FieldsSpec.() -> Unit,
     ) {
-        val fields = FieldsSpecBuilder().apply(configure).fields
+        val fields = FieldsSpecBuilder().apply(configure).fieldDescriptors
         PayloadDocumentation.applyPathPrefix(prefix, fields).forEach(::add)
     }
 
@@ -84,13 +85,13 @@ internal class FieldsSpecBuilder(
             PayloadDocumentation.relaxedRequestFields(
                 subsectionExtractor,
                 attributes,
-                fields,
+                fieldDescriptors,
             )
         } else {
             PayloadDocumentation.requestFields(
                 subsectionExtractor,
                 attributes,
-                fields,
+                fieldDescriptors,
             )
         }
 
@@ -103,13 +104,13 @@ internal class FieldsSpecBuilder(
             PayloadDocumentation.relaxedResponseFields(
                 subsectionExtractor,
                 attributes,
-                fields,
+                fieldDescriptors,
             )
         } else {
             PayloadDocumentation.responseFields(
                 subsectionExtractor,
                 attributes,
-                fields,
+                fieldDescriptors,
             )
         }
 
@@ -124,14 +125,14 @@ internal class FieldsSpecBuilder(
                 part,
                 subsectionExtractor,
                 attributes,
-                fields,
+                fieldDescriptors,
             )
         } else {
             PayloadDocumentation.requestPartFields(
                 part,
                 subsectionExtractor,
                 attributes,
-                fields,
+                fieldDescriptors,
             )
         }
 }

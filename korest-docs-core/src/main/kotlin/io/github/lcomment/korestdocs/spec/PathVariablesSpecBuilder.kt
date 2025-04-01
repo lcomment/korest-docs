@@ -18,18 +18,17 @@
 
 package io.github.lcomment.korestdocs.spec
 
-import io.github.lcomment.korestdocs.extension.putFormat
-import io.github.lcomment.korestdocs.extension.putType
-import io.github.lcomment.korestdocs.extension.toAttributes
+import io.github.lcomment.korestdocs.extensions.putFormat
+import io.github.lcomment.korestdocs.extensions.putType
+import io.github.lcomment.korestdocs.extensions.toAttributes
 import kotlin.reflect.KClass
 import org.springframework.restdocs.request.ParameterDescriptor
 import org.springframework.restdocs.request.PathParametersSnippet
-import org.springframework.restdocs.request.QueryParametersSnippet
 import org.springframework.restdocs.request.RequestDocumentation
 
-internal class ParametersSpecBuilder(
+class PathVariablesSpecBuilder(
     private val parameters: MutableList<ParameterDescriptor> = mutableListOf<ParameterDescriptor>(),
-) : ParametersSpec() {
+) : PathVariablesSpec() {
 
     override fun <T : Any> add(
         name: String,
@@ -52,17 +51,11 @@ internal class ParametersSpecBuilder(
     fun buildPathParameters(
         relaxed: Boolean,
         attributes: Map<String, Any?>,
-    ): PathParametersSnippet =
-        if (relaxed) {
+    ): PathParametersSnippet {
+        return if (relaxed) {
             RequestDocumentation.relaxedPathParameters(attributes, parameters)
         } else {
             RequestDocumentation.pathParameters(attributes, parameters)
         }
-
-    fun buildQueryParameters(relaxed: Boolean, attributes: Map<String, Any?>): QueryParametersSnippet =
-        if (relaxed) {
-            RequestDocumentation.relaxedQueryParameters(attributes, parameters)
-        } else {
-            RequestDocumentation.queryParameters(attributes, parameters)
-        }
+    }
 }

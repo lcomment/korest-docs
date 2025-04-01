@@ -19,18 +19,27 @@
 package io.github.lcomment.korestdocs.spec
 
 import io.github.lcomment.korestdocs.annotation.RestdocsSpecDslMarker
+import org.springframework.mock.web.MockMultipartFile
 import org.springframework.restdocs.request.RequestPartDescriptor
 
 @RestdocsSpecDslMarker
-interface RequestPartsSpec {
+abstract class RequestPartsSpec {
 
-    fun add(
+    val parts = mutableMapOf<String, MockMultipartFile>()
+
+    abstract fun part(
         name: String,
         description: String? = null,
-        optional: Boolean = false,
-        ignored: Boolean = false,
-        attributes: Map<String, Any?> = emptyMap(),
+        part: MockMultipartFile,
+        attributes: Map<String, Any> = mapOf("optional" to false),
     )
 
-    fun add(requestPartDescriptor: RequestPartDescriptor)
+    abstract fun optionalPart(
+        name: String,
+        description: String? = null,
+        part: MockMultipartFile,
+        attributes: Map<String, Any> = mapOf("optional" to true),
+    )
+
+    abstract fun add(requestPartDescriptor: RequestPartDescriptor)
 }

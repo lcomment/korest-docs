@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package io.github.lcomment.korestdocs.extension
+package io.github.lcomment.korestdocs.extensions
 
 import io.github.lcomment.korestdocs.type.DateField
 import io.github.lcomment.korestdocs.type.DateTimeField
