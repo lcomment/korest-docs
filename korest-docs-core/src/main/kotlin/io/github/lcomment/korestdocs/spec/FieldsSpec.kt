@@ -76,4 +76,3 @@ abstract class FieldsSpec : DocumentSpec {
 
     abstract fun withPrefix(prefix: String, configure: FieldsSpec.() -> Unit)
 }
-

@@ -27,6 +27,7 @@ import io.github.lcomment.example.service.ExampleService
 import io.github.lcomment.korestdocs.mockmvc.KorestDocumentationExtension
 import io.github.lcomment.korestdocs.mockmvc.documentation
 import io.github.lcomment.korestdocs.mockmvc.extensions.andDocument
+import io.github.lcomment.korestdocs.mockmvc.extensions.multipartWithDocs
 import io.github.lcomment.korestdocs.mockmvc.extensions.requestWithDocs
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -149,7 +150,7 @@ internal class ApiSpec {
         val image2 = MockMultipartFile("images", "", "image/png", "image2".toByteArray())
         val request = ExampleMultipartRequest(listOf(image1, image2))
 
-        mockMvc.multipart(HttpMethod.POST, "/example") {
+        mockMvc.multipartWithDocs(HttpMethod.POST, "/example") {
             header(HttpHeaders.AUTHORIZATION, "Bearer access-token")
             file(image1)
             file(image2)

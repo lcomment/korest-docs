@@ -96,4 +96,3 @@ internal class FieldsSpecTest : DescribeSpec({
         }
     }
 })
-
