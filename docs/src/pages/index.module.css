@@ -1,0 +1,53 @@
+.thumbnails {
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 0;
+}
+
+.wrapperText {
+    height: auto; /* 높이를 자동 조정하여 불필요한 간격 제거 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.wrapperText .title {
+    color: #000;
+    font-size: 2.5rem;
+    font-weight: 900;
+    line-height: 3rem;
+    letter-spacing: -0.05rem;
+}
+
+[data-theme='dark'] .wrapperText .title {
+    color: #fff;
+}
+
+.wrapperText .subTitle {
+    color: #969696;
+    font-weight: 700;
+    line-height: 1.4rem;
+}
+
+.thumbnails .banner {
+    width: 16rem;
+    height: 17rem;
+    margin-bottom: -3rem;
+}
+
+@media screen and (max-width: 996px) {
+    .heroBanner {
+        padding: 2rem;
+    }
+}
+
+.buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
