@@ -25,9 +25,6 @@ jobs:
           cache: npm
           cache-dependency-path: ./docs/package-lock.json
 
-      - name: cd to docs
-        run: cd docs
-
       - name: Install dependencies
         run: npm install --silent
 
