@@ -11,12 +11,13 @@ jobs:
     name: Build Docusaurus
     runs-on: ubuntu-latest
     steps:
-      - name: cd to docs
-        run: cd docs
-
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: cd to docs
+        run: cd docs
+
       - uses: actions/setup-node@v4
         with:
           node-version: 18.x
