@@ -45,15 +45,6 @@ abstract class FieldsSpec : DocumentSpec {
         this.field(path, description, example, T::class, attributes)
     }
 
-    inline fun <reified T : Any> ignoredField(
-        path: String,
-        description: String?,
-        example: T,
-        attributes: Map<String, Any> = mapOf("optional" to false, "ignored" to true),
-    ) {
-        this.field(path, description, example, T::class, attributes)
-    }
-
     inline fun <reified T : Any> subsectionField(
         path: String,
         description: String?,
@@ -70,6 +61,8 @@ abstract class FieldsSpec : DocumentSpec {
         type: KClass<T>,
         attributes: Map<String, Any>,
     )
+
+    abstract fun ignoredField(path: String)
 
     abstract fun <T : Any> subsectionField(
         path: String,

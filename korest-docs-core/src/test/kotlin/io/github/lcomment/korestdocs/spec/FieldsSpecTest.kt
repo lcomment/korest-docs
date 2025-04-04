@@ -70,12 +70,10 @@ internal class FieldsSpecTest : DescribeSpec({
             it("fieldsSpec should have one field") {
                 fieldsSpec.ignoredField(
                     path = "test",
-                    description = "test",
-                    example = example,
                 )
 
-                fieldsSpec.fields.size shouldBe 1
-                fieldsSpec.fields["test"] shouldBe example
+                fieldsSpec.fields.size shouldBe 0
+                fieldsSpec.fields["test"] shouldBe null
             }
         }
     }
