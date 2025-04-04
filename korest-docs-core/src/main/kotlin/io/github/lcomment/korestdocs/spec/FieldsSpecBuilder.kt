@@ -49,6 +49,14 @@ class FieldsSpecBuilder(
         add(descriptor)
     }
 
+    override fun ignoredField(
+        path: String,
+    ) {
+        val descriptor = PayloadDocumentation.fieldWithPath(path).ignored()
+
+        add(descriptor)
+    }
+
     override fun <T : Any> subsectionField(
         path: String,
         description: String?,
@@ -136,3 +144,4 @@ class FieldsSpecBuilder(
             )
         }
 }
+
