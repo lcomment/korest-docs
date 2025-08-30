@@ -18,9 +18,21 @@
 
 package io.github.lcomment.example.dto.request
 
+import io.github.lcomment.example.dto.response.ArrayResponse
+import io.github.lcomment.example.enums.ExampleEnum
 import jakarta.validation.constraints.NotBlank
 
 data class ExampleRequest(
     @field:NotBlank
     val example: String? = null,
-)
+    val arrayData: ArrayResponse = ArrayResponse(),
+    val enumData: ExampleEnum = ExampleEnum.EXAMPLE1,
+    val objectData: ObjectExample = ObjectExample(),
+) {
+
+    data class ObjectExample(
+        val value1: String = "value1",
+        val value2: Int = 1,
+        val value3: Boolean = true,
+    )
+}
