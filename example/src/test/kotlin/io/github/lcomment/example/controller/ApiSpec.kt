@@ -140,6 +140,13 @@ internal class ApiSpec {
 
                 requestField {
                     field("example", "example request", "example")
+                    field("arrayData.array1", "Array Data 1", request.arrayData.array1)
+                    field("arrayData.array2", "Array Data 2", request.arrayData.array2)
+                    field("arrayData.array3", "Array Data 3", request.arrayData.array3)
+                    field("enumData", "Enum Data", ExampleEnum.EXAMPLE1)
+                    field("objectData.value1", "Object Value 1", request.objectData.value1)
+                    field("objectData.value2", "Object Value 2", request.objectData.value2)
+                    field("objectData.value3", "Object Value 3", request.objectData.value3)
                 }
             }
     }
@@ -230,7 +237,15 @@ internal class ApiSpec {
             }
 
             requestField {
-                field("example", "example request", "example")
+                field("example", "Example Request", "example")
+                ignoredField("arrayData")
+                field("arrayData.array1", "Array Data 1", listOf("item1", "item2"))
+                field("arrayData.array2", "Array Data 2", setOf("item1", "item2"))
+                field("arrayData.array3", "Array Data 3", arrayOf("item1", "item2"))
+                field("enumData", "Enum Data", ExampleEnum.EXAMPLE1)
+                field("objectData.value1", "Object Value 1", "value1")
+                field("objectData.value2", "Object Value 2", 1)
+                field("objectData.value3", "Object Value 3", true)
             }
 
             responseField {
