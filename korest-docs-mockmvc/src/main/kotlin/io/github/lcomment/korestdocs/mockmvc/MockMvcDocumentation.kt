@@ -99,7 +99,7 @@ private fun requestHttp(
             header(key, value.toString())
         }
 
-        content = toJson(requestFieldsSpec?.fields ?: emptyMap<String, Any>())
+        content = toJsonString(requestFieldsSpec?.fields ?: emptyMap())
         contentType = MediaType.APPLICATION_JSON
     }
 }
@@ -138,6 +138,39 @@ private fun requestMultipart(
             it.method = method.name()
             it
         }
+    }
+}
+
+fun toJsonString(flatMap: Map<String, Any>): String {
+    val nestedMap = mutableMapOf<String, Any>()
+
+    val asMap = flatMap.keys
+        .filter { it.contains('.') }
+        .map { it.substringBefore('.') }
+        .toSet()
+
+    for ((key, value) in flatMap) {
+        if (asMap.contains(key) && !key.contains('.')) {
+            continue
+        }
+
+        insert(nestedMap, key, value)
+    }
+
+    return toJson(nestedMap)
+}
+
+fun insert(map: MutableMap<String, Any>, key: String, value: Any) {
+    val dotIndex = key.indexOf('.')
+
+    if (dotIndex == -1) {
+        map[key] = value
+    } else {
+        val first = key.substring(0, dotIndex)
+        val rest = key.substring(dotIndex + 1)
+        val child = map.getOrPut(first) { mutableMapOf<String, Any>() } as MutableMap<String, Any>
+
+        insert(child, rest, value)
     }
 }
 
